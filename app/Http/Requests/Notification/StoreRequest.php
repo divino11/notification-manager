@@ -17,12 +17,13 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_id' => ['required', 'int', Rule::exists(Client::class, 'id')],
-            'channel' => ['required', 'string', Rule::in([
+            'notifications' => 'required|array',
+            'notifications.*.client_id' => ['required', 'int', Rule::exists(Client::class, 'id')],
+            'notifications.*.channel' => ['required', 'string', Rule::in([
                 Notification::SMS,
                 Notification::EMAIL
             ])],
-            'content' => ['required', 'string', 'max:140']
+            'notifications.*.content' => ['required', 'string', 'max:140']
         ];
     }
 }

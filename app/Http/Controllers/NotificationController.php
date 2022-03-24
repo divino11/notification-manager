@@ -7,6 +7,7 @@ use App\Http\Requests\Notification\StoreRequest;
 use App\Jobs\ProcessNotification;
 use App\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 
 class NotificationController extends Controller
 {
@@ -31,26 +32,23 @@ class NotificationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreRequest $request
-     * @return Notification
+     * @return JsonResponse
      */
-    public function store(StoreRequest $request): Notification
+    public function store(StoreRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $notification = Notification::create([
-            'client_id' => $data['client_id'],
-            'channel' => $data['channel'],
-            'content' => $data['content'],
-        ]);
+        foreach ($data['notifications'] as $notification) {
+            $notificationData = Notification::create([
+                'client_id' => $notification['client_id'],
+                'channel' => $notification['channel'],
+                'content' => $notification['content'],
+            ]);
 
-        if ($data['channel'] === Notification::EMAIL) {
-            $this->dispatch(new ProcessNotification($notification));
-            //$notification->client->sendEmailNotification($notification);
-        } else if ($data['channel'] === Notification::SMS) {
-            $notification->client->sendSmsNotification($notification);
+            $this->dispatch(new ProcessNotification($notificationData));
         }
 
-        return $notification;
+        return response()->json(['success' => true]);
     }
 
     /**

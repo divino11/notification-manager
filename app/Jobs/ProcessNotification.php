@@ -30,6 +30,10 @@ class ProcessNotification implements ShouldQueue
      */
     public function handle()
     {
-        $this->notification->client->sendEmailNotification($this->notification);
+        if ($this->notification->channel === Notification::EMAIL) {
+            $this->notification->client->sendEmailNotification($this->notification);
+        } else if ($this->notification->channel === Notification::SMS) {
+            $this->notification->client->sendSmsNotification($this->notification);
+        }
     }
 }

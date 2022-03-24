@@ -2,9 +2,9 @@
 
 namespace App\Notifications\Client;
 
+use App\Models\Notification as NotificationEvent;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\VonageMessage;
 use Illuminate\Notifications\Notification;
 
 class SmsNotification extends Notification
@@ -16,10 +16,9 @@ class SmsNotification extends Notification
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        public NotificationEvent $notification
+    ) {}
 
     /**
      * Get the notification's delivery channels.
@@ -29,33 +28,18 @@ class SmsNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['vonage'];
     }
 
     /**
-     * Get the mail representation of the notification.
+     * Get the sms representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return VonageMessage
      */
-    public function toMail($notifiable)
+    public function toVonage($notifiable): VonageMessage
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            //
-        ];
+        return (new VonageMessage)
+            ->content($this->notification->content);
     }
 }
