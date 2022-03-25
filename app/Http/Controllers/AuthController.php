@@ -5,13 +5,40 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
+    /**
+     * Create a new user
+     *
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     *
+     * @OA\Post(
+     *     tags={"Public/Auth"},
+     *     path="/register",
+     *     description="Create a new user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/RegisterRequest")
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Successful user creation",
+     *          @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="token_type", type="string"),
+     *             @OA\Property(property="user", ref="#/components/schemas/UserModel"),
+     *         ),
+     *     ),
+     *     @OA\Response(response=422, ref="#/components/responses/422")
+     * )
+     */
+    public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -30,7 +57,33 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login(LoginRequest $request)
+    /**
+     * Login
+     *
+     * @param LoginRequest $request
+     * @return JsonResponse
+     *
+     * @OA\Post(
+     *     tags={"Public/Auth"},
+     *     path="/login",
+     *     description="Login",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/LoginRequest")
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Token",
+     *          @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="token_type", type="string"),
+     *             @OA\Property(property="user", ref="#/components/schemas/UserModel"),
+     *         ),
+     *     ),
+     *     @OA\Response(response=422, ref="#/components/responses/422")
+     * )
+     */
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->validated();
 

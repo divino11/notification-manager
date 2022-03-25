@@ -7,6 +7,16 @@ use App\Models\Notification;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Class StoreRequest
+ * @package App\Http\Requests\Client
+ *
+ * @OA\Schema(
+ *     schema="StoreNotificationRequest",
+ *     @OA\Property(property="notifications", type="array", @OA\Items(type="integer", example={{"client_id":"", "channel":"", "content":""}})),
+ *     required={"notifications"}
+ * )
+ */
 class StoreRequest extends FormRequest
 {
     /**

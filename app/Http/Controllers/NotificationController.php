@@ -8,16 +8,39 @@ use App\Jobs\ProcessNotification;
 use App\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class NotificationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get list of notifications
      *
      * @param IndexRequest $request
-     * @return Notification
+     * @return LengthAwarePaginator
+     *
+     * @OA\Get(
+     *     tags={"Private/Manage Notifications"},
+     *     path="/notification",
+     *     security={{"Bearer"={}}},
+     *     description="Get list of notifications",
+     *     @OA\Parameter(
+     *         description="Search by client",
+     *         in="query",
+     *         name="client_id",
+     *         required=false
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="List of notifications",
+     *          @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/NotificationModel")
+     *         ),
+     *     ),
+     *     @OA\Response(response=422, ref="#/components/responses/422")
+     * )
      */
-    public function index(IndexRequest $request): Notification
+    public function index(IndexRequest $request): LengthAwarePaginator
     {
         $data = $request->validated();
 
@@ -29,10 +52,29 @@ class NotificationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new client
      *
      * @param StoreRequest $request
      * @return JsonResponse
+     *
+     * @OA\Post(
+     *     tags={"Private/Manage Notifications"},
+     *     path="/notification",
+     *     security={{"Bearer"={}}},
+     *     description="Create a new notification",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StoreNotificationRequest")
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Successful notification creation",
+     *          @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *         ),
+     *     ),
+     *     @OA\Response(response=422, ref="#/components/responses/422")
+     * )
      */
     public function store(StoreRequest $request): JsonResponse
     {
@@ -52,10 +94,36 @@ class NotificationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get notification by ID
      *
      * @param Notification $notification
      * @return Notification
+     *
+     * @OA\Get(
+     *     tags={"Private/Manage Notifications"},
+     *     path="/notification/{notification}",
+     *     security={{"Bearer"={}}},
+     *     description="Get notification by ID",
+     *     @OA\Parameter(
+     *         description="ID of notification",
+     *         in="path",
+     *         name="notification_id",
+     *         required=true,
+     *         @OA\Schema(
+     *             format="int64",
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Notification",
+     *          @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/NotificationModel")
+     *         ),
+     *     ),
+     *     @OA\Response(response=422, ref="#/components/responses/422")
+     * )
      */
     public function show(Notification $notification): Notification
     {

@@ -8,6 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class Notification
+ * @package App\Models
+ *
+ * @OA\Schema(
+ *     schema="NotificationModel",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="client_id", type="integer"),
+ *     @OA\Property(property="channel", type="string"),
+ *     @OA\Property(property="content", type="string"),
+ * )
+ */
 class Notification extends Model
 {
     use HasFactory, Notifiable;

@@ -1,0 +1,657 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "Laravel API"
+        }
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Public/Auth"
+                ],
+                "summary": "Create a new user",
+                "description": "Create a new user",
+                "operationId": "0903f2e0df1a8857bee538fc055417f0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful user creation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/UserModel"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Public/Auth"
+                ],
+                "summary": "Login",
+                "description": "Login",
+                "operationId": "2dd578ff7aba2721293dac66833b27d1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/UserModel"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+        "/client": {
+            "get": {
+                "tags": [
+                    "Private/Manage Clients"
+                ],
+                "summary": "Get list of clients",
+                "description": "Get list of clients",
+                "operationId": "5781c1d61750090ca79e785c2cce6999",
+                "responses": {
+                    "200": {
+                        "description": "List of clients",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ClientModel"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Public/Manage Clients"
+                ],
+                "summary": "Create a new client",
+                "description": "Create a new client",
+                "operationId": "e8a58c07bfc028129fe11403bdc975a9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful client creation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ClientModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+        "/client/{client}": {
+            "get": {
+                "tags": [
+                    "Private/Manage Clients"
+                ],
+                "summary": "Get client by ID",
+                "description": "Get client by ID",
+                "operationId": "9bd5595a573cded477a770d0ac8d4130",
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "description": "ID of client",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ClientModel"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Public/Manage Clients"
+                ],
+                "summary": "Update client by ID",
+                "description": "Update client by ID",
+                "operationId": "f131b5349276e1db81afb854e077b2b7",
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "description": "ID of client",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful client update",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ClientModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Public/Manage Clients"
+                ],
+                "summary": "Delete client by ID",
+                "description": "Delete client by ID",
+                "operationId": "76793baa28a26155ec1e2787eb6a8bbb",
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "description": "ID of client",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Client not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/notification": {
+            "get": {
+                "tags": [
+                    "Private/Manage Notifications"
+                ],
+                "summary": "Get list of notifications",
+                "description": "Get list of notifications",
+                "operationId": "374cf5759ae311f38666cfd58baeeee3",
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "Search by client",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of notifications",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/NotificationModel"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Private/Manage Notifications"
+                ],
+                "summary": "Create a new client",
+                "description": "Create a new notification",
+                "operationId": "99b4ceaec27b2d3313d1ae80dcfdb365",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreNotificationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful notification creation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/notification/{notification}": {
+            "get": {
+                "tags": [
+                    "Private/Manage Notifications"
+                ],
+                "summary": "Get notification by ID",
+                "description": "Get notification by ID",
+                "operationId": "b75cdb8d56ba76b3929dbc588eef7aa0",
+                "parameters": [
+                    {
+                        "name": "notification_id",
+                        "in": "path",
+                        "description": "ID of notification",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/NotificationModel"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "LoginRequest": {
+                "description": "Class LoginRequest",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterRequest": {
+                "description": "Class RegisterRequest",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreRequest": {
+                "description": "Class StoreRequest",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone_number"
+                ],
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateRequest": {
+                "description": "Class UpdateRequest",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone_number"
+                ],
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreNotificationRequest": {
+                "description": "Class StoreRequest",
+                "required": [
+                    "notifications"
+                ],
+                "properties": {
+                    "notifications": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "example": [
+                                {
+                                    "client_id": "",
+                                    "channel": "",
+                                    "content": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ClientModel": {
+                "description": "Class Client",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "NotificationModel": {
+                "description": "Class Notification",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "client_id": {
+                        "type": "integer"
+                    },
+                    "channel": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserModel": {
+                "description": "Class User",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "422": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": "string"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Authentication error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "200": {
+                "description": "Success",
+                "content": {
+                    "application/json": {
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "Bearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
