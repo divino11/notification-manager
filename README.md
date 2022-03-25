@@ -4,6 +4,8 @@ Notification-manager
 - Notifications are in app/Http/Notifications
 - All controllers are in app/Http/Controllers
 
+For check email notification `http://localhost:8025`
+
 Technologies stack:
 - Laravel 9.*
 - Laravel Sail
