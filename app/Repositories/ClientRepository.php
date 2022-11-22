@@ -6,49 +6,90 @@ use App\Http\Requests\Client\StoreRequest;
 use App\Http\Requests\Client\UpdateRequest;
 use App\Models\Client;
 use App\Repositories\Interfaces\ClientRepositoryInterface;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
+use DB;
 
 class ClientRepository implements ClientRepositoryInterface
 {
-
     public function allClients(): LengthAwarePaginator
     {
-        return Client::orderByDesc('id')->paginate(20);
+        try {
+            return Client::orderByDesc('id')->paginate(20);
+        } catch (Exception $exception) {
+            return $this->error($exception->getMessage(), $exception->getCode());
+        }
     }
 
     public function saveClient(StoreRequest $request): Client
     {
-        $data = $request->validated();
+        DB::beginTransaction();
 
-        return Client::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'phone_number' => $data['phone_number'],
-        ]);
+        try {
+            $data = $request->validated();
+
+            $client = Client::create([
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'email' => $data['email'],
+                'phone_number' => $data['phone_number'],
+            ]);
+
+            DB::commit();
+
+            return $client;
+        } catch (Exception $exception) {
+            DB::rollBack();
+
+            return $this->error($exception->getMessage(), $exception->getCode());
+        }
     }
 
     public function getClient(Client $client): Client
     {
-        return $client;
+        try {
+            return $client;
+        } catch (Exception $exception) {
+            return $this->error($exception->getMessage(), $exception->getCode());
+        }
     }
 
     public function updateClient(Client $client, UpdateRequest $request): Client
     {
-        $data = $request->validated();
+        DB::beginTransaction();
 
-        $client->fill($data);
+        try {
+            $data = $request->validated();
 
-        $client->save();
+            $client->fill($data);
 
-        return $client;
+            $client->save();
+
+            DB::commit();
+
+            return $client;
+        } catch (Exception $exception) {
+            DB::rollBack();
+
+            return $this->error($exception->getMessage(), $exception->getCode());
+        }
     }
 
     public function deleteClient(Client $client): JsonResponse
     {
-        $client->delete();
+        DB::beginTransaction();
 
-        return response()->json(['success' => true]);
+        try {
+            $client->delete();
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (Exception $exception) {
+            DB::rollBack();
+
+            return $this->error($exception->getMessage(), $exception->getCode());
+        }
     }
 }

@@ -7,42 +7,60 @@ use App\Http\Requests\Notification\StoreRequest;
 use App\Jobs\ProcessNotification;
 use App\Models\Notification;
 use App\Repositories\Interfaces\NotificationRepositoryInterface;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class NotificationRepository implements NotificationRepositoryInterface
 {
-
     public function allNotifications(IndexRequest $request): LengthAwarePaginator
     {
-        $data = $request->validated();
+        try {
+            $data = $request->validated();
 
-        return Notification::when($data['client_id'], function (Builder $builder, int $client_id) {
-            $builder->where('client_id', $client_id);
-        })
-            ->orderBy('id', 'DESC')
-            ->paginate(20);
+            return Notification::when($data['client_id'], function (Builder $builder, int $client_id) {
+                $builder->where('client_id', $client_id);
+            })
+                ->orderBy('id', 'DESC')
+                ->paginate(20);
+        } catch (Exception $exception) {
+            return $this->error($exception->getMessage(), $exception->getCode());
+        }
     }
 
     public function saveNotification(StoreRequest $request): JsonResponse
     {
-        $data = $request->validated();
+        DB::beginTransaction();
 
-        foreach ($data['notifications'] as $notification) {
-            $notificationData = Notification::create([
-                'client_id' => $notification['client_id'],
-                'channel' => $notification['channel'],
-                'content' => $notification['content'],
-            ]);
+        try {
+            $data = $request->validated();
 
-            $this->dispatch(new ProcessNotification($notificationData));
+            foreach ($data['notifications'] as $notification) {
+                $notificationData = Notification::create([
+                    'client_id' => $notification['client_id'],
+                    'channel' => $notification['channel'],
+                    'content' => $notification['content'],
+                ]);
+
+                $this->dispatch(new ProcessNotification($notificationData));
+            }
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (Exception $exception) {
+            DB::rollBack();
+
+            return $this->error($exception->getMessage(), $exception->getCode());
         }
-
-        return response()->json(['success' => true]);
     }
 
     public function getNotification(Notification $notification): Notification
     {
-        return $notification;
+        try {
+            return $notification;
+        } catch (Exception $exception) {
+            return $this->error($exception->getMessage(), $exception->getCode());
+        }
     }
 }
