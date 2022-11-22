@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\Notification\IndexRequest;
-use App\Http\Requests\Notification\StoreRequest;
 use App\Jobs\ProcessNotification;
 use App\Models\Notification;
 use App\Repositories\Interfaces\NotificationRepositoryInterface;
@@ -13,11 +11,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class NotificationRepository implements NotificationRepositoryInterface
 {
-    public function allNotifications(IndexRequest $request): LengthAwarePaginator
+    public function allNotifications(array $data): LengthAwarePaginator
     {
         try {
-            $data = $request->validated();
-
             return Notification::when($data['client_id'], function (Builder $builder, int $client_id) {
                 $builder->where('client_id', $client_id);
             })
@@ -28,13 +24,11 @@ class NotificationRepository implements NotificationRepositoryInterface
         }
     }
 
-    public function saveNotification(StoreRequest $request): JsonResponse
+    public function saveNotification(array $data): JsonResponse
     {
         DB::beginTransaction();
 
         try {
-            $data = $request->validated();
-
             foreach ($data['notifications'] as $notification) {
                 $notificationData = Notification::create([
                     'client_id' => $notification['client_id'],

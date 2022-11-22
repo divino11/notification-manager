@@ -46,7 +46,9 @@ class NotificationController extends Controller
      */
     public function index(IndexRequest $request): LengthAwarePaginator
     {
-        return $this->notificationRepository->allNotifications($request);
+        $data = $request->validated();
+
+        return $this->notificationRepository->allNotifications($data);
     }
 
     /**
@@ -76,7 +78,9 @@ class NotificationController extends Controller
      */
     public function store(StoreRequest $request): JsonResponse
     {
-        return $this->notificationRepository->saveNotification($request);
+        $data = $request->validated();
+
+        return $this->notificationRepository->saveNotification($data);
     }
 
     /**

@@ -15,7 +15,9 @@ class ClientController extends Controller
 {
     public function __construct(
         public ClientRepository $clientRepository,
-    ) {}
+    )
+    {
+    }
 
     /**
      * Get list of clients
@@ -67,7 +69,9 @@ class ClientController extends Controller
      */
     public function store(StoreRequest $request): Client
     {
-        return $this->clientRepository->saveClient($request);
+        $data = $request->validated();
+
+        return $this->clientRepository->saveClient($data);
     }
 
     /**
@@ -142,7 +146,9 @@ class ClientController extends Controller
      */
     public function update(Client $client, UpdateRequest $request): Client
     {
-        return $this->clientRepository->updateClient($client, $request);
+        $data = $request->validated();
+
+        return $this->clientRepository->updateClient($client, $data);
     }
 
     /**

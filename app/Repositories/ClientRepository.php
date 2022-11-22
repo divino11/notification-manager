@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\Client\StoreRequest;
-use App\Http\Requests\Client\UpdateRequest;
 use App\Models\Client;
 use App\Repositories\Interfaces\ClientRepositoryInterface;
 use Exception;
@@ -22,13 +20,11 @@ class ClientRepository implements ClientRepositoryInterface
         }
     }
 
-    public function saveClient(StoreRequest $request): Client
+    public function saveClient(array $data): Client
     {
         DB::beginTransaction();
 
         try {
-            $data = $request->validated();
-
             $client = Client::create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
@@ -55,13 +51,11 @@ class ClientRepository implements ClientRepositoryInterface
         }
     }
 
-    public function updateClient(Client $client, UpdateRequest $request): Client
+    public function updateClient(Client $client, array $data): Client
     {
         DB::beginTransaction();
 
         try {
-            $data = $request->validated();
-
             $client->fill($data);
 
             $client->save();
