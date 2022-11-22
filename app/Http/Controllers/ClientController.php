@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Client\StoreRequest;
 use App\Http\Requests\Client\UpdateRequest;
 use App\Models\Client;
-use App\Models\User;
+use App\Repositories\ClientRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -13,6 +13,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ClientController extends Controller
 {
+    public function __construct(
+        public ClientRepository $clientRepository,
+    ) {}
+
     /**
      * Get list of clients
      *
@@ -36,7 +40,7 @@ class ClientController extends Controller
      */
     public function index(): LengthAwarePaginator
     {
-        return Client::orderBy('id', 'DESC')->paginate(20);
+        return $this->clientRepository->allClients();
     }
 
     /**
@@ -63,14 +67,7 @@ class ClientController extends Controller
      */
     public function store(StoreRequest $request): Client
     {
-        $data = $request->validated();
-
-        return Client::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'phone_number' => $data['phone_number'],
-        ]);
+        return $this->clientRepository->saveClient($request);
     }
 
     /**
@@ -107,7 +104,7 @@ class ClientController extends Controller
      */
     public function show(Client $client): Client
     {
-        return $client;
+        return $this->clientRepository->getClient($client);
     }
 
     /**
@@ -145,13 +142,7 @@ class ClientController extends Controller
      */
     public function update(Client $client, UpdateRequest $request): Client
     {
-        $data = $request->validated();
-
-        $client->fill($data);
-
-        $client->save();
-
-        return $client;
+        return $this->clientRepository->updateClient($client, $request);
     }
 
     /**
@@ -190,8 +181,6 @@ class ClientController extends Controller
      */
     public function destroy(Client $client): JsonResponse
     {
-        $client->delete();
-
-        return response()->json(['success' => true]);
+        return $this->clientRepository->deleteClient($client);
     }
 }
